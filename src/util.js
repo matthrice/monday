@@ -84,16 +84,28 @@ const loadPromise = (str) => {
  */ 
 const loadMap = (map, opt) => {
     let promises = [];
-    let loaded = {};
+    let loaded = {}; // dictionary to be filled with data promises
     let filename;
-
+    
     let options = opt || {};
 
+    // iterates through keys
     for (let key in map) {
         if (map.hasOwnProperty(key)) {
-            if (!map[key] || map[key].length === 0)
+            filename = map[key];
+            // adds them to iterable promises, with loaded on the same keys receiving data
+            promises.push(loadPromise(filename)
+                .then((key2) => {
+                    return (data) => {
+                        loaded[key2] = data;
+                    };
+                })(key));
         }
     }
+
+    map.loaded = loaded;
+
+    return Promise.all(promises);
 }
 
 export {
