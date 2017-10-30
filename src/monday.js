@@ -1,3 +1,6 @@
+const util = require('./util');
+const parse = require('./parse');
+
 /*
  * Monday Class
  */
@@ -18,7 +21,7 @@ class Monday {
      * - object of all slides
      */ 
     constructor(doc, options, filepath) {
-        this.document = doc;
+        this.document = doc.toString();
         this.options = options || {};
         this.filepath = filepath || '.';
 
@@ -29,27 +32,29 @@ class Monday {
         this.script = 'paging.js';
 
         this.slides = [];
-
+    };
     /*
      * Render the slides
      * make a object for each slide
      * 
      */
-     
-    
+    loadDoc() {
+        return util.loadPromise(this.document);
     };
+
+    renderSlides(slide_data) {
+        return parse.parseSlides(slide_data);
+    }
+    // loadDocument -> render slides -> populate
+    run() {
+        const docChain = this.loadDoc()
+            .then(this.renderSlides.bind(this))
+            .then()
+            
+    }
+
+
 
 
 
 }
-
-
-/*
- * Render the slides
- * make a object for each slide
- * - 
- */ 
-
-/*
- *
- */ 
