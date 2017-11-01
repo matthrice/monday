@@ -121,6 +121,9 @@ const loadSettings = (source, dest) => {
         })
 }
 
+/*
+ * Put it all together to load the templates, styles, and scripts
+ */ 
 const loadTemplateAndStyle = (source, central_dest) => {
     source += '/';
 
@@ -134,6 +137,9 @@ const loadTemplateAndStyle = (source, central_dest) => {
 }
 
 export {
-    loadPromise
+    loadPromise,
+    populate,
+    loadMap,
+    loadTemplateAndStyle
 }
 

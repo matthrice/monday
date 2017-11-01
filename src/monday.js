@@ -25,11 +25,19 @@ class Monday {
         this.options = options || {};
         this.filepath = filepath || '.';
 
-        this.intro_layout = 'templates/intro_layout.pug';
-        this.content_layout = 'templates/content_layout.pug';
+        this.templates = {
+            layout: 'templates/layout.pug',
+            slides: 'templates/default.pug'
+        }
 
-        this.style = 'styles/default.css';
-        this.script = 'paging.js';
+        this.resources = {
+            style: 'resources/default.css',
+            script: 'resources/script.js'
+        }
+
+        this.external = {
+            style: []
+        }
 
         this.slides = [];
     };
@@ -39,7 +47,10 @@ class Monday {
      * 
      */
     loadDoc() {
-        return util.loadPromise(this.document);
+        return Promise.all([
+            helper.loadMap(this.external, { external: true }),
+            helper.loadMap(this.templates)
+        ]);;
     };
 
     renderSlides(slide_data) {
@@ -50,7 +61,7 @@ class Monday {
         const docChain = this.loadDoc()
             .then(this.renderSlides.bind(this))
             .then()
-            
+
     }
 
 
