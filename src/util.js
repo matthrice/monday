@@ -108,15 +108,29 @@ const loadMap = (map, opt) => {
     return Promise.all(promises);
 }
 
-const loadTemplateAndStyle = (source, central) => {
+/*
+ * Load any user settings defined in a json file
+ */ 
+const loadSettings = (source, dest) => {
+    return loadPromise(source)
+        .then((data) => {
+            if (data) {
+                data = JSON.parse(data);
+                dest.override = data.override;
+            }
+        })
+}
+
+const loadTemplateAndStyle = (source, central_dest) => {
     source += '/';
 
     return Promises.all([
-        loadSettings(source + 'settings.json', central),
-        populate(source + 'style.css', central, 'style'),
-        populate(source + '')
-
-    ])
+        loadSettings(source + 'settings.json', central_dest),
+        populate(source + 'style.css', central_dest.external, 'style'),
+        populate(source + 'layout.pug', central_dest.templates, 'layout'),
+        populate(source + 'template.pug', central_dest.templates, 'slides'),
+        populate(source + 'script.js', central_dest.external, 'script')
+    ]);
 }
 
 export {
