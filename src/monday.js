@@ -54,7 +54,8 @@ class Monday {
     };
 
     renderSlides(slide_data) {
-        return parse.parseSlides(slide_data);
+        this.slides = parse.parseSlides(slide_data);
+        return Promise.resolve(true);
     }
     // loadDocument -> render slides -> populate
     run() {
