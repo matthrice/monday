@@ -21,27 +21,6 @@ const promiseFile = (filename) => {
 }
 
 /*
- * loading one asset and returning it to the loaded resource map
- * 
- * util.populate(this.intro_layout, this.templates, 'slides')
- */ 
-const populate = (filename, dest, key) => {
-    return promiseFile(filename)
-        .then((data) => {
-            if (data) {
-                // if it's an array, push the data to the array (create an empty one if not exist)
-                if (Object.prototype.toString.call(dest[key]) === '[object Array]') {
-                    dest.loaded[key] = dest.loaded[key] || [];
-                    dest.loaded[key].push(data);
-                // otherwise, just load data
-                } else {
-                    dest.loaded[key] = data;
-                }
-            }
-        })
-}
-
-/*
  * Promise for GET requests
  */ 
 const promiseGET = (url) => {
@@ -78,6 +57,27 @@ const loadPromise = (str) => {
 }
 
 /*
+ * loading one asset and returning it to the loaded resource map
+ * 
+ * util.populate(this.intro_layout, this.templates, 'slides')
+ */ 
+const populate = (filename, dest, key) => {
+    return loadPromise(filename)
+        .then((data) => {
+            if (data) {
+                // if an array already exists, just push the data
+                if (Object.prototype.toString.call(dest[key]) === '[object Array]') {
+                    dest.loaded[key] = dest.loaded[key] || [];
+                    dest.loaded[key].push(data);
+                // otherwise, just initialize a new piece of data
+                } else {
+                    dest.loaded[key] = data;
+                }
+            }
+        });
+}
+
+/*
  * loads files from map and places them into loaded
  * 
  * @return {Promise.<Array.<Object>>} same map with a loaded field
@@ -106,6 +106,17 @@ const loadMap = (map, opt) => {
     map.loaded = loaded;
 
     return Promise.all(promises);
+}
+
+const loadTemplateAndStyle = (source, central) => {
+    source += '/';
+
+    return Promises.all([
+        loadSettings(source + 'settings.json', central),
+        populate(source + 'style.css', central, 'style'),
+        populate(source + '')
+
+    ])
 }
 
 export {
