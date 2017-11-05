@@ -53,20 +53,32 @@ class Monday {
         ]);;
     };
 
-    renderSlides(slide_data) {
-        this.slides = parse.parseSlides(slide_data);
+    /*
+     * render slides into objects from slide parser
+     */ 
+    renderSlides() {
+        
+        slide_data = parse.parseSlides(this.document);
+        for (let i = 1; i < slide_data.length; i++) {
+            this.slides.push({
+                id: i,
+                hidden: i !== 1,
+                content = slide_data[i]
+            })
+        }
         return Promise.resolve(true);
     }
+
+    populate
+
     // loadDocument -> render slides -> populate
     run() {
-        const docChain = this.loadDoc()
-            .then(this.renderSlides.bind(this))
-            .then()
+        const self = this;
+        const docChain = this.loadDoc() // load all the documents
+            .then(self.renderSlides.bind(self)) // render slides from documents
 
+        return docChain;
     }
-
-
-
-
-
 }
+
+module.exports = Monday;

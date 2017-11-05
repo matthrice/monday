@@ -1,0 +1,44 @@
+#!/usr/bin/env node
+
+const path = require('path')
+const fs = require('fs')
+const program = require('commander')
+const tinylr = require('tiny-lr')
+const Monday = require('../')
+
+const create = (files, opts, done) => {
+  files.forEach((file) => {
+    fs.readFile(file, 'utf-8', (err, contents) => {
+      if (err) {
+        throw err;
+      }
+
+      const presentation = new Monday(contents, opts, path.resolve(path.dirname(file)));
+
+      presentation.run()
+        .then((product) => {
+          const outputFile = presentation.options.output || path.basename(file, '.txt') + '-monday.html';
+          fs.writeFile(outputFile, product, done);
+        })
+        .fail((err) => {
+          process.stderr.write(err.message + '\n');
+        })
+        process.exit(1);
+    });
+  });
+}
+
+program
+  .usage('[command] [file]');
+
+program 
+  .command('*')
+  .description('')
+  .action(() => {
+    const files = program.args.filter((arg) => {
+      return typeof arg === 'string'
+    });
+
+    Monday = require('../');
+    create(files, {}, () => {});
+  })
